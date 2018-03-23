@@ -9,17 +9,21 @@ let boardClasses = {
     10 : 'ten-by-ten',
     12 : 'twelve-by-twelve'
   }
-  
-let gameSize = 8;
 
 class Board extends Component {
+    constructor(props) {
+        super(props);
+        this.state = { gameSize : props.gameSize };
+    }
+
     render() {
+        let gs = this.state.gameSize;
         let squareArr = [];
-        for(let i = 0; i<(gameSize*gameSize); i++) {
+        for(let i = 0; i<(gs*gs); i++) {
           squareArr.push(<Square key={i} squareState='empty'/>);
         }
         return (
-          <div className={`container ${boardClasses[gameSize]}`}>
+          <div className={`container ${boardClasses[gs]}`}>
             {squareArr}
           </div>
         );

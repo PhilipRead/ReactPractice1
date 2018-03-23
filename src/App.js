@@ -4,7 +4,7 @@ import './App.css';
 
 class App extends Component {
   render() {
-    return <Board/>
+    return <Board gameSize='12'/>
   }
 }
 
