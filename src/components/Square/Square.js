@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './Square.css';
 
 let nextSquareState = {
     'empty' : 'blue',

@@ -1,0 +1,15 @@
+.square {
+    border-radius: 5px;
+  }
+  
+  .empty {
+    background-color: #383838;
+  }
+  
+  .blue {
+    background-color: cyan;
+  }
+  
+  .orange {
+    background-color: #ff8000;
+  }

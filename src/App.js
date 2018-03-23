@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Square from './Square.js';
+import Square from './components/Square/Square.js';
 import './App.css';
 
 let boardClasses = {

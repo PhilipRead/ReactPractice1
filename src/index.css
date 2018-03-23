@@ -36,19 +36,3 @@ body {
   grid-template-rows: repeat(12, 50px);
   grid-gap: 3px;
 }
-
-.square {
-  border-radius: 5px;
-}
-
-.empty {
-  background-color: #383838;
-}
-
-.blue {
-  background-color: cyan;
-}
-
-.orange {
-  background-color: #ff8000;
-}
