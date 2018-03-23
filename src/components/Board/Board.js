@@ -19,7 +19,7 @@ class Board extends Component {
     render() {
         let gs = this.state.gameSize;
         let squareArr = [];
-        for(let i = 0; i<(gs*gs); i++) {
+        for(let i = 0; i < (gs*gs); i++) {
           squareArr.push(<Square key={i} squareState='empty'/>);
         }
         return (
