@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Square from '../Square/Square.js';
 import './Board.css';
+import Math from 'mathjs';
 
 let boardClasses = {
   4 : 'four-by-four',
@@ -18,8 +19,37 @@ class Board extends Component {
         this.board = [];
     }
 
+    equalArrs(arr1, arr2) {
+      for(let i = 0; i < arr1.length; i++) {
+        if(arr1[i] !== arr2[i]) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    checkUniqueArrs(arrs) {
+      for(let i = 0; i < arrs.length; i++) {
+        for(let k = i + 1; k < arrs.length; k++) {
+          if(this.equalArrs(arrs[i], arrs[k])) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+
     checkIfSolved() {
-      console.log('checking if solved');
+      if(!this.checkUniqueArrs(this.board)) {
+        return false;
+      }
+
+      let transposed = Math.transpose(this.board);
+      if(!this.checkUniqueArrs(transposed)) {
+        return false;
+      }
+
+      return true;
     }
     
     updateBoard = (i, k, value) => {
@@ -34,10 +64,8 @@ class Board extends Component {
 
       this.board[i][k] = value;
 
-      console.log(this.unmarkedSquares);
-
       if(this.unmarkedSquares === 0) {
-        this.checkIfSolved();
+        console.log(this.checkIfSolved());
       }
     }
 
