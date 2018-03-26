@@ -99,6 +99,10 @@ class Board extends Component {
       }
     }
 
+    solve = () => {
+      console.log('solving');
+    }
+
     render() {
         let gs = this.gameSize;
         let squareArr = [];
@@ -113,6 +117,7 @@ class Board extends Component {
         return (
           <div className={`container ${boardClasses[gs]}`}>
             {squareArr}
+            <button onClick={this.solve}>Solve</button>
           </div>
         );
     }
