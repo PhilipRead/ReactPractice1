@@ -1,37 +1,30 @@
 import React, { Component } from 'react';
 import './Square.css';
 
-let nextSquareState = {
-    'empty' : 'orange',
-    'orange' : 'blue',
-    'blue' : 'empty'
+let stateToClass = {
+    0 : 'empty',
+    1 : 'orange',
+    2 : 'blue'
 };
 
-let stateToValue = {
-    'empty' : 0,
-    'orange' : 1,
-    'blue' : 2
+let nextSquareState = {
+    0 : 1,
+    1 : 2,
+    2 : 0
 };
 
 class Square extends Component {
     constructor(props) {
         super(props);
-        this.state = { squareState: props.squareState }
         this.row = props.row;
         this.col = props.col;
         this.updateBoard = props.updateBoard;
     }
 
-    handleClick = () => {
-        let newSquareState = nextSquareState[this.state.squareState];
-        this.setState({
-            squareState: newSquareState
-        });
-        this.updateBoard(this.row, this.col, stateToValue[newSquareState]);
-    }
+    handleClick = () => this.updateBoard(this.row, this.col, nextSquareState[this.props.squareState]);
 
     render() {
-        return <div className={`square ${this.state.squareState}`} onClick={this.handleClick}></div>;
+        return <div className={`square ${stateToClass[this.props.squareState]}`} onClick={this.handleClick}></div>;
     }
 }
 

@@ -16,7 +16,11 @@ class Board extends Component {
         super(props);
         this.gameSize = props.gameSize;
         this.unmarkedSquares = this.gameSize * this.gameSize;
-        this.board = [];
+        let newBoard = [];
+        for(var i = 0; i < this.gameSize; i++) {
+          newBoard.push(Array.from(new Array(this.gameSize), () => 0));
+        }
+        this.state = { board: newBoard };
     }
 
     verifyArr(arr) {
@@ -70,11 +74,11 @@ class Board extends Component {
     }
 
     checkIfSolved() {
-      if(!this.checkArrs(this.board)) {
+      if(!this.checkArrs(this.state.board)) {
         return false;
       }
 
-      let transposed = Math.transpose(this.board);
+      let transposed = Math.transpose(this.state.board);
       if(!this.checkArrs(transposed)) {
         return false;
       }
@@ -83,7 +87,7 @@ class Board extends Component {
     }
     
     updateBoard = (i, k, value) => {
-      let curValue = this.board[i][k];
+      let curValue = this.state.board[i][k];
       if(curValue === value) {
         return;
       } else if (curValue === 0) {
@@ -92,27 +96,46 @@ class Board extends Component {
         this.unmarkedSquares++;
       }
 
-      this.board[i][k] = value;
+      this.setState(prevState => {
+        prevState.board[i][k] = value;
+        return prevState;
+      });
 
       if(this.unmarkedSquares === 0) {
         console.log(this.checkIfSolved());
       }
     }
 
+    fillTriples() {
+      for(let i = 0; i < this.state.board.length; i++) {
+        for(let k = 0; k < this.state.board.length; k++) {
+          let squareVal = this.state.board[i][k];
+          if(squareVal === 0) {
+            this.unmarkedSquares--;
+            this.setState(prevState => {
+              let newValue = Math.randomInt(1,3);
+              console.log(newValue);
+              prevState.board[i][k] = newValue;
+              return prevState;
+            });
+          }
+        }
+      }
+    }
+
     solve = () => {
-      console.log('solving');
+      while(this.unmarkedSquares > 0) {
+        this.fillTriples();
+      }
     }
 
     render() {
         let gs = this.gameSize;
         let squareArr = [];
         for(let i = 0; i < gs; i++) {
-         let newRow = [];
           for(let k = 0; k < gs; k++) {
-            newRow.push(0);
-            squareArr.push(<Square key={i*gs+k} row={i} col={k} squareState='empty' updateBoard={this.updateBoard} />);
+            squareArr.push(<Square key={i*gs+k} row={i} col={k} squareState={this.state.board[i][k]} updateBoard={this.updateBoard} />);
           }
-          this.board.push(newRow);
         }
         return (
           <div className={`container ${boardClasses[gs]}`}>
