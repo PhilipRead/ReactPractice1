@@ -2,15 +2,15 @@ import React, { Component } from 'react';
 import './Square.css';
 
 let nextSquareState = {
-    'empty' : 'blue',
-    'blue' : 'orange',
-    'orange' : 'empty'
+    'empty' : 'orange',
+    'orange' : 'blue',
+    'blue' : 'empty'
 };
 
 let stateToValue = {
     'empty' : 0,
-    'blue' : 1,
-    'orange' : 2
+    'orange' : 1,
+    'blue' : 2
 };
 
 class Square extends Component {

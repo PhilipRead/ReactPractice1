@@ -19,6 +19,31 @@ class Board extends Component {
         this.board = [];
     }
 
+    verifyArr(arr) {
+      let count = 0;
+      let lookBackType = 0;
+      let lookBackNum = 0;
+      for(let squareVal of arr) {
+        if(squareVal === 1) {
+          count++;
+        } else {
+          count--;
+        }
+
+        if(lookBackType === squareVal) {
+          if(lookBackNum === 2) {
+            return false;
+          }
+          lookBackNum++;
+        } else {
+          lookBackType = squareVal;
+          lookBackNum = 1;
+        }
+      }
+
+      return count === 0;
+    }
+
     equalArrs(arr1, arr2) {
       for(let i = 0; i < arr1.length; i++) {
         if(arr1[i] !== arr2[i]) {
@@ -28,10 +53,15 @@ class Board extends Component {
       return true;
     }
 
-    checkUniqueArrs(arrs) {
+    checkArrs(arrs) {
       for(let i = 0; i < arrs.length; i++) {
+        let nextArr = arrs[i];
+        if(!this.verifyArr(nextArr)) {
+          return false;
+        }
+
         for(let k = i + 1; k < arrs.length; k++) {
-          if(this.equalArrs(arrs[i], arrs[k])) {
+          if(this.equalArrs(nextArr, arrs[k])) {
             return false;
           }
         }
@@ -40,12 +70,12 @@ class Board extends Component {
     }
 
     checkIfSolved() {
-      if(!this.checkUniqueArrs(this.board)) {
+      if(!this.checkArrs(this.board)) {
         return false;
       }
 
       let transposed = Math.transpose(this.board);
-      if(!this.checkUniqueArrs(transposed)) {
+      if(!this.checkArrs(transposed)) {
         return false;
       }
 
