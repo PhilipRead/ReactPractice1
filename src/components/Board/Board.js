@@ -134,7 +134,7 @@ class Board extends Component {
             [i, k-1, i, k+1], //horiz cross double
             [i-1, k, i+1, k]  //verti cross double
           ];
-          for(let doubleCords of doubleCordss) {
+          doubleCordss.some(doubleCords => {
             let doubleVal = this.isDouble(...doubleCords);
             if(doubleVal > 0) {
               foundDouble = true;
@@ -142,9 +142,10 @@ class Board extends Component {
               this.unmarkedSquares--;
               this.moves.push({i:i, k:k, value:this.tempBoard[i][k]});
               this.moveMade = true;
-              break;
+              return true;
             }
-          }
+            return false;
+          });
         }
       }
     }
@@ -171,11 +172,11 @@ class Board extends Component {
         if(moves.length === 0) {
           return;
         }
-        for(let move of moves) {
+        moves.forEach(move => {
           move.value = value;
           this.tempBoard[move.i][move.k] = value;
           this.unmarkedSquares--;
-        }
+        });
         this.moves.push(...moves);
         this.moveMade = true;
       }
@@ -187,11 +188,58 @@ class Board extends Component {
     }
   }
 
+  fillSimiliarSpans(rowCheck) {
+    let completedSpans = [];
+    let twoOffSpans = [];
+    for(let i = 0; i < this.gameSize; i++) {
+      let unmarkeds = 0;
+      for(let k = 0; k < this.gameSize; k++) {
+        let value = rowCheck ? this.tempBoard[i][k] : this.tempBoard[k][i];
+        if(value === 0) {
+          unmarkeds++;
+        }
+      }
+      if(unmarkeds === 0) {
+        completedSpans.push(i);
+      } else if(unmarkeds === 2) {
+        twoOffSpans.push(i);
+      } 
+    }
+    twoOffSpans.forEach(twoOffSpan => {
+      completedSpans.some((completedSpan, index) => {
+        let moves = [];
+        for(let i = 0; i < this.gameSize; i++) {
+          let completedVal;
+          let twoOffVal;
+          if(rowCheck) {
+            completedVal = this.tempBoard[completedSpan][i];
+            twoOffVal = this.tempBoard[twoOffSpan][i];
+          } else {
+            completedVal = this.tempBoard[i][completedSpan];
+            twoOffVal = this.tempBoard[i][twoOffSpan];
+          }
+          if(twoOffVal === 0) {
+            let value = completedVal === 2 ? 1 : 2;
+            moves.push(rowCheck ? {i:twoOffSpan, k:i, value:value} : {i:i, k:twoOffSpan, value:value});
+          } else if(twoOffVal !== completedVal) {
+            return false;
+          }
+        }
+        moves.forEach(move => {
+          this.tempBoard[move.i][move.k] = move.value;
+          this.unmarkedSquares--;
+        });
+        this.moves.push(...moves);
+        this.moveMade = true;
+        completedSpans.splice(index, 1);
+        return true;
+      });
+    });
+  }
+
   solve = () => {
     this.tempBoard = [];
-    for(let row of this.state.board) {
-      this.tempBoard.push([...row]);
-    }
+    this.state.board.forEach(row => this.tempBoard.push([...row]));
     this.moves = [];
     this.moveMade = true;
     while(this.unmarkedSquares > 0 && this.moveMade) {
@@ -199,6 +247,8 @@ class Board extends Component {
       this.fillTriples();
       this.fillMonoSpans(true);
       this.fillMonoSpans(false);
+      this.fillSimiliarSpans(true);
+      this.fillSimiliarSpans(false);
     }
     let nextMove = move => {
       if(move === undefined) {
@@ -208,7 +258,7 @@ class Board extends Component {
         let newBoard = prevState.board;
         newBoard[move.i][move.k] = move.value;
         return {board: newBoard};
-      }, () => setTimeout(() => nextMove(this.moves.shift()), 500));
+      }, () => setTimeout(() => nextMove(this.moves.shift()), 200));
     };
 
     nextMove(this.moves.shift());
